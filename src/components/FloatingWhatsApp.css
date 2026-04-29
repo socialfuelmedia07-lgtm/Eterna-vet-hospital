@@ -1,0 +1,29 @@
+.floating-whatsapp {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--secondary-yellow);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  transition: transform 0.3s ease;
+  animation: pulse 4s infinite, bounceSlow 3s ease-in-out infinite;
+}
+
+.floating-whatsapp:hover {
+  transform: scale(1.1);
+  animation: none;
+}
+
+@media (max-width: 768px) {
+  .floating-whatsapp {
+    bottom: 80px; /* Above the mobile booking bar if any */
+    width: 56px;
+    height: 56px;
+  }
+}

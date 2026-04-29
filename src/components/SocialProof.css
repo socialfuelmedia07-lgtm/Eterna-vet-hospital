@@ -1,0 +1,154 @@
+.reviews-ticker-container {
+  overflow: hidden;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 20px 0;
+}
+
+.reviews-ticker {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.review-card {
+  background-color: var(--bg-white);
+  padding: 32px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+  width: 400px;
+  flex-shrink: 0;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+}
+
+.review-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-style: italic;
+  color: var(--text-dark);
+}
+
+.reviewer strong {
+  display: block;
+  font-size: 16px;
+  color: var(--primary-blue);
+}
+
+.reviewer span {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.before-after-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.ba-card {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.ba-images {
+  display: flex;
+}
+
+.ba-img {
+  flex: 1;
+  height: 200px;
+  position: relative;
+  border-right: 2px solid var(--bg-white);
+}
+
+.ba-img:last-child {
+  border-right: none;
+}
+
+.ba-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bg-white);
+  z-index: 10;
+}
+
+.ba-label.before {
+  background-color: #64748B;
+}
+
+.ba-label.after {
+  background-color: #10B981;
+}
+
+.ba-card h4 {
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.video-testimonials {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.video-card {
+  height: 300px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.video-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: var(--bg-white);
+  font-weight: 600;
+  text-align: left;
+}
+
+@media (max-width: 992px) {
+  .review-card {
+    width: 300px;
+  }
+  
+  .before-after-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-testimonials {
+    grid-template-columns: 1fr;
+  }
+}

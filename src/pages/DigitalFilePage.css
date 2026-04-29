@@ -1,0 +1,119 @@
+.digital-file-page .subtitle {
+  font-size: 18px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.step-card {
+  background-color: var(--bg-white);
+  padding: 32px 24px;
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.step-icon {
+  background-color: var(--bg-sky);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.step-card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.step-card p {
+  color: var(--text-muted);
+}
+
+.mockup-container {
+  display: flex;
+  justify-content: center;
+}
+
+.mockup-card {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.mockup-header {
+  background-color: var(--primary-blue);
+  color: var(--bg-white);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mockup-avatar {
+  font-size: 40px;
+  background-color: rgba(255,255,255,0.2);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mockup-title h4 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.mockup-title span {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.mockup-body {
+  padding: 24px;
+}
+
+.mockup-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.mockup-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.mockup-section h5 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.prescription-list li, .history-list li {
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: var(--text-dark);
+}
+
+@media (max-width: 768px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
