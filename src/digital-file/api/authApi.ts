@@ -29,11 +29,6 @@ const DIGITAL_FILE_API_BASE = '/digital-file/api';
 
 const parseErrorMessage = async (response: Response): Promise<string> => {
   try {
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      const text = await response.text();
-      return text ? `Request failed: ${text.slice(0, 120)}` : 'Request failed. Please try again.';
-    }
     const data = (await response.json()) as ApiErrorResponse;
     return data.message || 'Request failed. Please try again.';
   } catch {

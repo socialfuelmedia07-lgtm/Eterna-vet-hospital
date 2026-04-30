@@ -8,16 +8,9 @@
     ],
     "rewrites": [
       {
-        "source": "/digital-file/api/**",
-        "function": "digitalFileApi"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }
     ]
-  },
-  "functions": {
-    "source": "functions"
   }
 }
