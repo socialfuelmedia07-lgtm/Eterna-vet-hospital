@@ -1,7 +1,8 @@
+import React from 'react';
 import { FileText, Smartphone, Activity } from 'lucide-react';
 import './DigitalFilePage.css';
 
-const DigitalFilePage = () => {
+const DigitalFilePage: React.FC = () => {
   return (
     <div className="digital-file-page animate-fade-in-up">
       <section className="section-padding bg-sky">

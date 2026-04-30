@@ -1,14 +1,14 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getWhatsAppLink, defaultBookingMessage } from '../utils/whatsapp';
 import { Menu, X } from 'lucide-react';
-import { useState } from 'react';
 import Logo from './Logo';
 import './Header.css';
 
-const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const Header: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleMenu = (): void => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
     <header className="header">

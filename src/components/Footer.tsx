@@ -1,10 +1,11 @@
+import React from 'react';
 import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getWhatsAppLink, defaultBookingMessage } from '../utils/whatsapp';
 import Logo from './Logo';
 import './Footer.css';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <div className="footer-cta text-center">
@@ -83,7 +84,7 @@ const Footer = () => {
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
-              allowFullScreen="" 
+              allowFullScreen={true}
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
               title="Eterna Pet Hospital Location"

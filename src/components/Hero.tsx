@@ -1,9 +1,10 @@
-import { ArrowRight, ArrowDown, PawPrint } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, ArrowDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getWhatsAppLink, defaultBookingMessage } from '../utils/whatsapp';
 import './Hero.css';
 
-const Hero = () => {
+const Hero: React.FC = () => {
   return (
     <section className="hero">
       <div className="container hero-container">

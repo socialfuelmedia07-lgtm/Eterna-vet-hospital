@@ -1,6 +1,16 @@
+import React from 'react';
 import './Gallery.css';
 
-const galleryItems = [
+interface GalleryItem {
+  id: number;
+  caption: string;
+  image: string | null;
+  placeholder?: string;
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+  objectPosition?: string;
+}
+
+const galleryItems: GalleryItem[] = [
   { id: 1, caption: 'Clinic reception / waiting area', image: '/waiting-area.jpg' },
   { id: 2, caption: 'Consultation rooms with equipment', image: '/cons-room.jpg' },
   { id: 3, caption: 'Doctors actively working with dogs', image: '/docter-active.jpg', objectPosition: 'center 28%' },
@@ -9,7 +19,7 @@ const galleryItems = [
   { id: 6, caption: 'In-house Lab/X-ray room', image: '/x-ray.jpg' },
 ];
 
-const Gallery = () => {
+const Gallery: React.FC = () => {
   return (
     <section id="gallery" className="section-padding bg-white">
       <div className="container">

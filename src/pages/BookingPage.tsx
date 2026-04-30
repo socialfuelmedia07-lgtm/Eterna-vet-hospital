@@ -1,8 +1,9 @@
+import React from 'react';
 import { MessageCircle, CheckCircle } from 'lucide-react';
 import { getWhatsAppLink, defaultBookingMessage } from '../utils/whatsapp';
 import './BookingPage.css';
 
-const BookingPage = () => {
+const BookingPage: React.FC = () => {
   return (
     <div className="booking-page animate-fade-in-up">
       <section className="section-padding bg-yellow booking-section">

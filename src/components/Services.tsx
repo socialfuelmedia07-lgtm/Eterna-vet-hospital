@@ -1,7 +1,16 @@
+import React from 'react';
 import { Syringe, Stethoscope, Scissors, HeartPulse, Hospital, Shield, Activity, PhoneCall, Check } from 'lucide-react';
 import './Services.css';
 
-const servicesList = [
+interface ServiceItem {
+  id: number;
+  name: string;
+  icon: React.ReactNode;
+  desc: string;
+  logged: boolean;
+}
+
+const servicesList: ServiceItem[] = [
   { id: 1, name: 'Vaccination', icon: <Syringe size={32} />, desc: 'Core & lifestyle vaccines for protection.', logged: true },
   { id: 2, name: 'General Checkup', icon: <Stethoscope size={32} />, desc: 'Comprehensive nose-to-tail exams.', logged: true },
   { id: 3, name: 'Surgery', icon: <Hospital size={32} />, desc: 'State-of-the-art surgical suite.', logged: true },
@@ -12,7 +21,7 @@ const servicesList = [
   { id: 8, name: 'X-Ray & Lab Tests', icon: <Activity size={32} />, desc: 'In-house diagnostics & imaging.', logged: true },
 ];
 
-const Services = () => {
+const Services: React.FC = () => {
   return (
     <section id="services" className="section-padding bg-white">
       <div className="container">

@@ -1,8 +1,9 @@
+import React from 'react';
 import { MessageCircle } from 'lucide-react';
 import { getWhatsAppLink, defaultBookingMessage } from '../utils/whatsapp';
 import './FloatingWhatsApp.css';
 
-const FloatingWhatsApp = () => {
+const FloatingWhatsApp: React.FC = () => {
   return (
     <a 
       href={getWhatsAppLink(defaultBookingMessage)} 

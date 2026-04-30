@@ -1,6 +1,11 @@
 import React from 'react';
 
-const Logo = ({ height = 80, className = "" }) => {
+interface LogoProps {
+  height?: number;
+  className?: string;
+}
+
+const Logo: React.FC<LogoProps> = ({ height = 80, className = "" }) => {
   return (
     <div className={`logo-container ${className}`} style={{ height: height, display: 'flex', alignItems: 'center', gap: '4px' }}>
       {/* Using the image file for the icon to ensure 100% accuracy as requested */}

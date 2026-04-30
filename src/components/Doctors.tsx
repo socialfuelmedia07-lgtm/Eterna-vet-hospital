@@ -1,23 +1,32 @@
+import React from 'react';
 import './Doctors.css';
 
-const doctorsList = [
+interface Doctor {
+  id: number;
+  name: string;
+  specialty: string;
+  quote: string;
+  image: string;
+}
+
+const doctorsList: Doctor[] = [
   {
     id: 1,
     name: 'Dr. Paunus Joshi',
-    specialty: 'Clinical Medicine',
+    specialty: 'M.V.Sc Vet Internal Medicine',
     quote: "I treat every patient like it's my own dog at home.",
     image: '/dr-paunus.jpg'
   },
   {
     id: 2,
-    name: 'Dr. Yukti',
-    specialty: 'General Veterinary Physician',
+    name: 'Dr. Yamini Thakur',
+    specialty: 'M.V.Sc Vet Surgery and Radiology (Ophthalmology)',
     quote: "Ensuring a safe, pain-free recovery is my top priority.",
     image: '/dr-yukti.jpg'
   }
 ];
 
-const Doctors = () => {
+const Doctors: React.FC = () => {
   return (
     <section id="doctors" className="section-padding bg-sky">
       <div className="container">

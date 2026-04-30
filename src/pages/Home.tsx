@@ -6,7 +6,7 @@ import Gallery from '../components/Gallery';
 import SocialProof from '../components/SocialProof';
 import FAQ from '../components/FAQ';
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <div className="home-page animate-fade-in-up">
       <Hero />

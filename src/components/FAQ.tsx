@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import './FAQ.css';
 
-const faqs = [
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const faqs: FAQItem[] = [
   {
     question: "Is my dog's medical data safe and private?",
     answer: "Absolutely. We use enterprise-grade encryption to store your dog's medical records. Only our doctors and you have access to the full digital file."
@@ -37,10 +42,10 @@ const faqs = [
   }
 ];
 
-const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState(null);
+const FAQ: React.FC = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggleFAQ = (index) => {
+  const toggleFAQ = (index: number): void => {
     if (openIndex === index) {
       setOpenIndex(null);
     } else {

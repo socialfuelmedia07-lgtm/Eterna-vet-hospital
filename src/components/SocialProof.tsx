@@ -1,7 +1,14 @@
+import React from 'react';
 import { Star } from 'lucide-react';
 import './SocialProof.css';
 
-const reviews = [
+interface Review {
+  name: string;
+  dog: string;
+  text: string;
+}
+
+const reviews: Review[] = [
   {
     name: "Neha M.",
     dog: "Owner of Max, Labrador",
@@ -24,7 +31,7 @@ const reviews = [
   }
 ];
 
-const SocialProof = () => {
+const SocialProof: React.FC = () => {
   return (
     <section className="section-padding bg-sky">
       <div className="container">
@@ -66,7 +73,7 @@ const SocialProof = () => {
                 [Healed skin]
               </div>
             </div>
-            <h4>Dermatology & Skin Care</h4>
+            <h4 style={{ margin: 0, padding: '16px', textAlign: 'center', fontSize: '16px' }}>Dermatology & Skin Care</h4>
           </div>
           
           <div className="ba-card">
@@ -80,7 +87,7 @@ const SocialProof = () => {
                 [Clean teeth]
               </div>
             </div>
-            <h4>Dental Cleaning Results</h4>
+            <h4 style={{ margin: 0, padding: '16px', textAlign: 'center', fontSize: '16px' }}>Dental Cleaning Results</h4>
           </div>
         </div>
 
