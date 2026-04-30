@@ -140,3 +140,9 @@
   align-items: center;
   gap: 0.7rem;
 }
+
+.admin-record-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

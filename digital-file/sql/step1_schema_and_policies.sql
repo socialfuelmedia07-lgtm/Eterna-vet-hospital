@@ -48,8 +48,10 @@ create table if not exists public.medical_records (
   id uuid primary key default gen_random_uuid(),
   pet_id uuid not null references public.pets(id) on delete cascade,
   file_url text not null,
+  storage_path text,
   file_name varchar(255) not null,
   file_type public.medical_file_type not null,
+  description text,
   uploaded_by uuid not null references public.users(id),
   created_at timestamptz not null default now()
 );

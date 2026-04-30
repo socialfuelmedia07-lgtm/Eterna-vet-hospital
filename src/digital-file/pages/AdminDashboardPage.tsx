@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAdminPetDetails, getAdminPets, uploadMedicalRecord } from '../api/adminDashboardApi';
+import { deleteMedicalRecord, getAdminPetDetails, getAdminPets, uploadMedicalRecord } from '../api/adminDashboardApi';
 import { useAuth } from '../auth/AuthContext';
 import type { AdminPetPanelData, AdminPetRow } from '../types/adminDashboard';
 import type { MedicalFileType } from '../types/parentDashboard';
@@ -16,6 +16,7 @@ const AdminDashboardPage: React.FC = () => {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [panelData, setPanelData] = useState<AdminPetPanelData | null>(null);
   const [selectedFileType, setSelectedFileType] = useState<MedicalFileType>('prescription');
+  const [description, setDescription] = useState('');
   const [uploading, setUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -67,6 +68,7 @@ const AdminDashboardPage: React.FC = () => {
         fileName: file.name,
         fileType: selectedFileType,
         fileUrl: '',
+        description: description.trim() || null,
         createdAt: new Date().toISOString(),
       };
       setPanelData((prev) =>
@@ -78,7 +80,7 @@ const AdminDashboardPage: React.FC = () => {
           : prev,
       );
 
-      const uploaded = await uploadMedicalRecord(token, selectedPetId, selectedFileType, file);
+      const uploaded = await uploadMedicalRecord(token, selectedPetId, selectedFileType, file, description);
       setPanelData((prev) =>
         prev
           ? {
@@ -87,6 +89,7 @@ const AdminDashboardPage: React.FC = () => {
             }
           : prev,
       );
+      setDescription('');
     } catch (error) {
       setPanelData((prev) =>
         prev
@@ -100,6 +103,29 @@ const AdminDashboardPage: React.FC = () => {
     } finally {
       setUploading(false);
       event.target.value = '';
+    }
+  };
+
+  const handleDeleteRecord = async (recordId: string): Promise<void> => {
+    if (!token || !selectedPetId) return;
+    const ok = window.confirm('Delete this record? This will remove the uploaded file permanently.');
+    if (!ok) return;
+
+    const previous = panelData;
+    setPanelData((prev) =>
+      prev
+        ? {
+            ...prev,
+            medicalRecords: prev.medicalRecords.filter((r) => r.id !== recordId),
+          }
+        : prev,
+    );
+
+    try {
+      await deleteMedicalRecord(token, selectedPetId, recordId);
+    } catch (error) {
+      setPanelData(previous);
+      setErrorMessage(error instanceof Error ? error.message : 'Delete failed.');
     }
   };
 
@@ -221,6 +247,13 @@ const AdminDashboardPage: React.FC = () => {
                   <option value="lab_report">Lab Report</option>
                   <option value="media">Media</option>
                 </select>
+                <input
+                  type="text"
+                  placeholder="Description (optional)"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  style={{ flex: '1 1 220px' }}
+                />
                 <label htmlFor="admin-upload-input" className="btn btn-primary">
                   {uploading ? 'Uploading...' : 'Upload File'}
                 </label>
@@ -249,6 +282,18 @@ const AdminDashboardPage: React.FC = () => {
                       <p className="parent-record-subtext">
                         {record.fileType.replace('_', ' ')} - {formatDate(record.createdAt)}
                       </p>
+                      {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
+                    </div>
+                    <div className="admin-record-actions">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          void handleDeleteRecord(record.id);
+                        }}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </article>
                 ))

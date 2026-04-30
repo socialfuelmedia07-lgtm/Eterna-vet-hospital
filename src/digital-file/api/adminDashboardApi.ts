@@ -47,9 +47,11 @@ export const uploadMedicalRecord = async (
   petId: string,
   fileType: MedicalFileType,
   file: File,
+  description: string,
 ): Promise<UploadedRecordResult> => {
   const form = new FormData();
   form.append('fileType', fileType);
+  form.append('description', description);
   form.append('file', file);
 
   const response = await fetch(`${DIGITAL_FILE_API_BASE}/admin/pets/${petId}/records`, {
@@ -60,4 +62,12 @@ export const uploadMedicalRecord = async (
 
   const data = await parseJsonOrThrow<{ record: UploadedRecordResult }>(response);
   return data.record;
+};
+
+export const deleteMedicalRecord = async (token: string, petId: string, recordId: string): Promise<void> => {
+  const response = await fetch(`${DIGITAL_FILE_API_BASE}/admin/pets/${petId}/records/${recordId}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+  await parseJsonOrThrow<{ ok: true }>(response);
 };

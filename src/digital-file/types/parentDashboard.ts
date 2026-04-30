@@ -14,6 +14,7 @@ export interface MedicalRecord {
   fileUrl: string;
   fileName: string;
   fileType: MedicalFileType;
+  description: string | null;
   createdAt: string;
 }
 

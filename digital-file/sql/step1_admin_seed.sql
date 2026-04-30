@@ -12,8 +12,8 @@ insert into public.users (
 )
 values (
   'admin',
-  'admin_master',
-  '$2b$12$9RvkL6v4Q1j2O3hM9zIf5eXQ8Lax4VYdMG2at2k1p9N03fW8n2F7u',
+  'eternaadmin',
+  '$2b$12$wY/m6Fd6Zni7SCeJ5K3JOO/mE7lQQXRNS8TJwCI3TmhWtJjrT2Tm2',
   'System Admin',
   '+10000000000'
 )

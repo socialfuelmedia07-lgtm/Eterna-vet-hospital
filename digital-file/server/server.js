@@ -26,6 +26,14 @@ const buildSessionResponse = (userRow) => ({
   },
 });
 
+const getErrorMessage = (error, fallback) => {
+  if (error instanceof Error && error.message) return error.message;
+  if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+    return error.message;
+  }
+  return fallback;
+};
+
 const generateUniqueUsername = async (dogName) => {
   const base = normalizeDogNameToUsernameBase(dogName);
   const checkExists = async (username) => {
@@ -48,7 +56,7 @@ api.post('/auth/generate-username', async (req, res) => {
     const username = await generateUniqueUsername(dogName);
     return res.json({ username });
   } catch (error) {
-    return res.status(400).json({ message: error instanceof Error ? error.message : 'Invalid request.' });
+    return res.status(400).json({ message: getErrorMessage(error, 'Invalid request.') });
   }
 });
 
@@ -58,7 +66,7 @@ api.post('/auth/signup', async (req, res) => {
     phoneNumber: z.string().min(1),
     dogName: z.string().min(1),
     breed: z.string().min(1),
-    dob: z.string().min(1),
+    dob: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date of Birth must be in YYYY-MM-DD format.'),
     gender: z.enum(['male', 'female']),
     username: z.string().min(1),
     password: z.string().min(8),
@@ -108,7 +116,7 @@ api.post('/auth/signup', async (req, res) => {
     if (createdUserId) {
       await supabaseAdmin.from('users').delete().eq('id', createdUserId);
     }
-    return res.status(400).json({ message: error instanceof Error ? error.message : 'Signup failed.' });
+    return res.status(400).json({ message: getErrorMessage(error, 'Signup failed.') });
   }
 });
 
@@ -152,7 +160,7 @@ api.get('/parent/dashboard', requireAuth, requireRole('parent'), async (req, res
 
     const { data: records, error: recordsError } = await supabaseAdmin
       .from('medical_records')
-      .select('id, file_url, file_name, file_type, created_at')
+      .select('id, file_url, file_name, file_type, description, created_at')
       .eq('pet_id', pet.id)
       .order('created_at', { ascending: false });
     if (recordsError) throw recordsError;
@@ -171,6 +179,7 @@ api.get('/parent/dashboard', requireAuth, requireRole('parent'), async (req, res
         fileUrl: r.file_url,
         fileName: r.file_name,
         fileType: r.file_type,
+        description: r.description ?? null,
         createdAt: r.created_at,
       })),
     });
@@ -271,7 +280,7 @@ api.get('/admin/pets/:petId', requireAuth, requireRole('admin'), async (req, res
 
     const { data: records, error: recordsError } = await supabaseAdmin
       .from('medical_records')
-      .select('id, file_url, file_name, file_type, created_at')
+      .select('id, file_url, file_name, file_type, description, created_at')
       .eq('pet_id', petId)
       .order('created_at', { ascending: false });
     if (recordsError) throw recordsError;
@@ -292,6 +301,7 @@ api.get('/admin/pets/:petId', requireAuth, requireRole('admin'), async (req, res
         fileUrl: r.file_url,
         fileName: r.file_name,
         fileType: r.file_type,
+        description: r.description ?? null,
         createdAt: r.created_at,
       })),
     });
@@ -301,10 +311,13 @@ api.get('/admin/pets/:petId', requireAuth, requireRole('admin'), async (req, res
 });
 
 api.post('/admin/pets/:petId/records', requireAuth, requireRole('admin'), upload.single('file'), async (req, res) => {
-  const schema = z.object({ fileType: z.enum(['prescription', 'lab_report', 'media']) });
+  const schema = z.object({
+    fileType: z.enum(['prescription', 'lab_report', 'media']),
+    description: z.string().max(2000).optional().default(''),
+  });
   try {
     const { petId } = req.params;
-    const { fileType } = schema.parse(req.body);
+    const { fileType, description } = schema.parse(req.body);
     if (!req.file) return res.status(400).json({ message: 'File is required.' });
 
     const allowed = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
@@ -330,11 +343,13 @@ api.post('/admin/pets/:petId/records', requireAuth, requireRole('admin'), upload
       .insert({
         pet_id: petId,
         file_url: fileUrl,
+        storage_path: storagePath,
         file_name: req.file.originalname,
         file_type: fileType,
+        description: description.trim() || null,
         uploaded_by: req.auth.userId,
       })
-      .select('id, file_url, file_name, file_type, created_at')
+      .select('id, file_url, file_name, file_type, description, created_at')
       .single();
     if (insertError) throw insertError;
 
@@ -344,11 +359,52 @@ api.post('/admin/pets/:petId/records', requireAuth, requireRole('admin'), upload
         fileUrl: inserted.file_url,
         fileName: inserted.file_name,
         fileType: inserted.file_type,
+        description: inserted.description ?? null,
         createdAt: inserted.created_at,
       },
     });
   } catch (error) {
     return res.status(400).json({ message: error instanceof Error ? error.message : 'File upload failed.' });
+  }
+});
+
+const tryDeriveStoragePathFromPublicUrl = (fileUrl) => {
+  try {
+    const url = new URL(fileUrl);
+    const marker = `/storage/v1/object/public/${config.storageBucket}/`;
+    const idx = url.pathname.indexOf(marker);
+    if (idx === -1) return null;
+    return decodeURIComponent(url.pathname.slice(idx + marker.length));
+  } catch {
+    return null;
+  }
+};
+
+api.delete('/admin/pets/:petId/records/:recordId', requireAuth, requireRole('admin'), async (req, res) => {
+  try {
+    const { petId, recordId } = req.params;
+
+    const { data: record, error } = await supabaseAdmin
+      .from('medical_records')
+      .select('id, pet_id, file_url, storage_path')
+      .eq('id', recordId)
+      .eq('pet_id', petId)
+      .maybeSingle();
+    if (error && error.code !== 'PGRST116') throw error;
+    if (!record) return res.status(404).json({ message: 'Record not found.' });
+
+    const storagePath = record.storage_path || tryDeriveStoragePathFromPublicUrl(record.file_url);
+    if (storagePath) {
+      const { error: removeError } = await supabaseAdmin.storage.from(config.storageBucket).remove([storagePath]);
+      if (removeError) throw removeError;
+    }
+
+    const { error: deleteError } = await supabaseAdmin.from('medical_records').delete().eq('id', recordId);
+    if (deleteError) throw deleteError;
+
+    return res.json({ ok: true });
+  } catch (error) {
+    return res.status(400).json({ message: getErrorMessage(error, 'Delete failed.') });
   }
 });
 

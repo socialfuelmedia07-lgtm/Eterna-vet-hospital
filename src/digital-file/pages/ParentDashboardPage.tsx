@@ -196,6 +196,7 @@ const ParentDashboardPage: React.FC = () => {
                 <div className="parent-record-meta">
                   <p>{record.fileName}</p>
                   <p className="parent-record-subtext">Uploaded {formatDate(record.createdAt)}</p>
+                  {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
                 </div>
 
                 <div className="parent-record-actions">
