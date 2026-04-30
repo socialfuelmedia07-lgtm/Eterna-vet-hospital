@@ -1,0 +1,127 @@
+.digital-file-auth-page {
+  padding: 64px 0;
+  background: var(--bg-sky);
+  min-height: 70vh;
+}
+
+.digital-file-auth-card {
+  width: min(680px, calc(100% - 2rem));
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 14px 36px rgba(26, 111, 212, 0.12);
+}
+
+.digital-file-auth-title {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.digital-file-auth-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.digital-file-role-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.digital-file-role-button {
+  border: 1px solid #d8e4f2;
+  background: #fff;
+  color: var(--text-dark);
+  border-radius: 9999px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.digital-file-role-button.active {
+  background: var(--primary-blue);
+  color: #fff;
+  border-color: var(--primary-blue);
+}
+
+.digital-file-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.digital-file-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.digital-file-field.full {
+  grid-column: 1 / -1;
+}
+
+.digital-file-field label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.digital-file-field input,
+.digital-file-field select {
+  border: 1px solid #cedbec;
+  border-radius: 10px;
+  padding: 0.72rem 0.8rem;
+  font-size: 0.95rem;
+}
+
+.digital-file-field input:focus,
+.digital-file-field select:focus {
+  outline: 2px solid rgba(26, 111, 212, 0.25);
+  border-color: var(--primary-blue);
+}
+
+.digital-file-auth-actions {
+  margin-top: 1.3rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.digital-file-error {
+  margin-top: 0.5rem;
+  color: #b91c1c;
+  font-size: 0.92rem;
+}
+
+.digital-file-success-box {
+  margin: 1rem 0;
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: #ecf8f1;
+  border: 1px solid #b2e4c9;
+}
+
+.digital-file-success-box p {
+  margin: 0;
+}
+
+.digital-file-link-row {
+  margin-top: 1rem;
+  color: var(--text-muted);
+}
+
+.digital-file-link-button {
+  border: none;
+  background: transparent;
+  color: var(--primary-blue);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .digital-file-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,154 @@
+.parent-dashboard-page {
+  padding: 64px 0;
+  background: var(--bg-sky);
+  min-height: 70vh;
+}
+
+.parent-dashboard-card {
+  width: min(980px, calc(100% - 2rem));
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 14px 36px rgba(26, 111, 212, 0.12);
+}
+
+.parent-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.parent-dashboard-subtitle {
+  color: var(--text-muted);
+}
+
+.parent-pet-profile {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+  border: 1px solid #dfebf8;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.parent-photo-box {
+  border: 1px solid #d7e4f3;
+  border-radius: 14px;
+  padding: 0.7rem;
+  text-align: center;
+}
+
+.parent-photo-preview {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #eff5fc;
+}
+
+.parent-photo-placeholder {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 12px;
+  background: #eff5fc;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.parent-pet-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.parent-detail-item {
+  border: 1px solid #edf3fb;
+  border-radius: 12px;
+  padding: 0.7rem;
+}
+
+.parent-detail-item p {
+  margin: 0;
+}
+
+.parent-detail-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.parent-records-title {
+  margin-bottom: 0.6rem;
+}
+
+.parent-record-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.parent-record-item {
+  border: 1px solid #dfeaf7;
+  border-radius: 14px;
+  padding: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.parent-record-meta p {
+  margin: 0;
+}
+
+.parent-record-subtext {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.parent-type-badge {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.24rem 0.62rem;
+  background: #ebf3ff;
+  color: #1357aa;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.parent-record-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.parent-empty {
+  border: 1px dashed #bfd4ec;
+  border-radius: 14px;
+  padding: 1rem;
+  color: var(--text-muted);
+}
+
+.parent-status {
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .parent-pet-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .parent-pet-details {
+    grid-template-columns: 1fr;
+  }
+
+  .parent-record-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
