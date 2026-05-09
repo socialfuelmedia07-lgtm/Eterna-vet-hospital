@@ -21,6 +21,9 @@ const ParentDashboardPage: React.FC = () => {
     );
   }, [data?.medicalRecords]);
 
+  const prescriptionRecords = useMemo(() => records.filter((r) => r.fileType === 'prescription'), [records]);
+  const otherRecords = useMemo(() => records.filter((r) => r.fileType !== 'prescription'), [records]);
+
   useEffect(() => {
     const loadDashboard = async (): Promise<void> => {
       if (!token) {
@@ -186,33 +189,66 @@ const ParentDashboardPage: React.FC = () => {
           </article>
         ) : null}
 
-        <h2 className="parent-records-title">Medical Records</h2>
+        <h2 className="parent-records-title">Medical records</h2>
         {records.length === 0 ? (
           <p className="parent-empty">Your vet hasn&apos;t uploaded any records yet.</p>
         ) : (
           <div className="parent-record-list">
-            {records.map((record) => (
-              <article key={record.id} className="parent-record-item">
-                <div className="parent-record-meta">
-                  <p>{record.fileName}</p>
-                  <p className="parent-record-subtext">Uploaded {formatDate(record.createdAt)}</p>
-                  {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
-                </div>
+            {prescriptionRecords.length > 0 ? (
+              <>
+                <h3 className="parent-record-section-heading">Prescriptions &amp; medication (PDF)</h3>
+                {prescriptionRecords.map((record) => (
+                  <article key={record.id} className="parent-record-item parent-record-item--rx">
+                    <div className="parent-record-meta">
+                      <p>{record.fileName}</p>
+                      <p className="parent-record-subtext">Uploaded {formatDate(record.createdAt)}</p>
+                      {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
+                    </div>
 
-                <div className="parent-record-actions">
-                  <span className="parent-type-badge">{record.fileType.replace('_', ' ')}</span>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      void downloadMedicalRecord(record);
-                    }}
-                  >
-                    Download
-                  </button>
-                </div>
-              </article>
-            ))}
+                    <div className="parent-record-actions">
+                      <span className="parent-type-badge parent-type-badge--rx">Prescription</span>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          void downloadMedicalRecord(record);
+                        }}
+                      >
+                        Download PDF
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </>
+            ) : null}
+
+            {otherRecords.length > 0 ? (
+              <>
+                <h3 className="parent-record-section-heading">Labs, imaging &amp; other files</h3>
+                {otherRecords.map((record) => (
+                  <article key={record.id} className="parent-record-item">
+                    <div className="parent-record-meta">
+                      <p>{record.fileName}</p>
+                      <p className="parent-record-subtext">Uploaded {formatDate(record.createdAt)}</p>
+                      {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
+                    </div>
+
+                    <div className="parent-record-actions">
+                      <span className="parent-type-badge">{record.fileType.replace('_', ' ')}</span>
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => {
+                          void downloadMedicalRecord(record);
+                        }}
+                      >
+                        Download
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </>
+            ) : null}
           </div>
         )}
       </div>

@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import cors from 'cors';
 import express from 'express';
 import multer from 'multer';
+import path from 'node:path';
 import { z } from 'zod';
 import { config } from './config.js';
 import { requireAuth, requireRole } from './middleware.js';
@@ -16,6 +17,14 @@ app.use(express.json({ limit: '2mb' }));
 
 const api = express.Router();
 app.use('/digital-file/api', api);
+
+api.get('/health', (req, res) => {
+  return res.json({
+    ok: true,
+    service: 'digital-file-api',
+    timestamp: new Date().toISOString(),
+  });
+});
 
 const buildSessionResponse = (userRow) => ({
   token: signSessionToken(userRow),
@@ -327,8 +336,8 @@ api.post('/admin/pets/:petId/records', requireAuth, requireRole('admin'), upload
 
     const ext = toSafeExt(req.file.originalname);
     const timestamp = Date.now();
-    const safeName = req.file.originalname.replace(/[^\w.-]/g, '_');
-    const storagePath = `medical-records/${petId}/${timestamp}_${safeName}.${ext}`;
+    const stem = path.parse(req.file.originalname).name.replace(/[^\w.-]/g, '_') || 'file';
+    const storagePath = `medical-records/${petId}/${timestamp}_${stem}.${ext}`;
 
     const { error: uploadError } = await supabaseAdmin.storage
       .from(config.storageBucket)

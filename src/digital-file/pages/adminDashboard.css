@@ -92,6 +92,52 @@
   overflow: auto;
 }
 
+.admin-panel--wide {
+  width: min(1480px, 100%);
+  max-width: 100%;
+}
+
+.prescription-workspace-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1100px) {
+  .prescription-workspace-grid {
+    grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.prescription-preview-column {
+  position: sticky;
+  top: 0;
+}
+
+.prescription-preview-scroll {
+  max-height: min(78vh, 920px);
+  overflow: auto;
+  padding-bottom: 0.5rem;
+}
+
+.prescription-preview-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media print {
+  .no-print,
+  .admin-dashboard-page > .admin-dashboard-card,
+  .admin-panel-backdrop::before {
+    display: none !important;
+  }
+}
+
 .admin-panel-head {
   display: flex;
   justify-content: space-between;
@@ -112,6 +158,39 @@
   padding: 0.65rem;
 }
 
+.admin-detail-card--photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.5rem;
+}
+
+.admin-thumb-lg {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.prescription-panel-sub {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.prescription-module {
+  margin: 1rem 0 1.25rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e8f0fa;
+  border-bottom: 1px solid #e8f0fa;
+}
+
+.attachment-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.65rem;
+}
+
 .admin-upload-block {
   border: 1px solid #d6e4f4;
   border-radius: 12px;
@@ -129,6 +208,20 @@
 .admin-record-list {
   display: grid;
   gap: 0.65rem;
+}
+
+.admin-record-section-title {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 0.5rem;
+}
+
+.admin-record-section-title:first-child {
+  margin-top: 0;
 }
 
 .admin-record-item {

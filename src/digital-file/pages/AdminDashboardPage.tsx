@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { deleteMedicalRecord, getAdminPetDetails, getAdminPets, uploadMedicalRecord } from '../api/adminDashboardApi';
 import { useAuth } from '../auth/AuthContext';
+import { PrescriptionWorkspace } from '../components/prescription/PrescriptionWorkspace';
 import type { AdminPetPanelData, AdminPetRow } from '../types/adminDashboard';
-import type { MedicalFileType } from '../types/parentDashboard';
+import type { MedicalFileType, MedicalRecord } from '../types/parentDashboard';
 import './adminDashboard.css';
 
 const AdminDashboardPage: React.FC = () => {
@@ -38,6 +39,15 @@ const AdminDashboardPage: React.FC = () => {
   }, [token, search, sortBy, sortDir]);
 
   const selectedPet = useMemo(() => pets.find((pet) => pet.id === selectedPetId) || null, [pets, selectedPetId]);
+
+  const adminPrescriptionRecords = useMemo(
+    () => (panelData?.medicalRecords ?? []).filter((r) => r.fileType === 'prescription'),
+    [panelData?.medicalRecords],
+  );
+  const adminOtherMedicalRecords = useMemo(
+    () => (panelData?.medicalRecords ?? []).filter((r) => r.fileType !== 'prescription'),
+    [panelData?.medicalRecords],
+  );
 
   const handleLogout = (): void => {
     clearSession();
@@ -132,13 +142,36 @@ const AdminDashboardPage: React.FC = () => {
   const formatDate = (dateString: string): string =>
     new Date(dateString).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
+  const renderAdminRecordRow = (record: MedicalRecord): React.ReactElement => (
+    <article key={record.id} className="admin-record-item">
+      <div>
+        <p>{record.fileName}</p>
+        <p className="parent-record-subtext">
+          {record.fileType.replace('_', ' ')} — {formatDate(record.createdAt)}
+        </p>
+        {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
+      </div>
+      <div className="admin-record-actions">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => {
+            void handleDeleteRecord(record.id);
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </article>
+  );
+
   return (
     <section className="admin-dashboard-page">
       <div className="admin-dashboard-card">
         <div className="admin-dashboard-header">
           <div>
-            <h1>Admin Dashboard</h1>
-            <p>Logged in as: {user?.username ?? 'Admin'}</p>
+            <h1>Admin — Digital file & prescriptions</h1>
+            <p>Eterna Pet Hospital · Signed in as {user?.username ?? 'Admin'}</p>
           </div>
           <button type="button" className="btn btn-secondary" onClick={handleLogout}>
             Logout
@@ -215,37 +248,59 @@ const AdminDashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {selectedPetId && selectedPet && panelData ? (
+      {selectedPetId && selectedPet && panelData && token ? (
         <div className="admin-panel-backdrop" onClick={() => setSelectedPetId(null)}>
-          <aside className="admin-panel" onClick={(event) => event.stopPropagation()}>
+          <aside className="admin-panel admin-panel--wide" onClick={(event) => event.stopPropagation()}>
             <div className="admin-panel-head">
-              <h2>{panelData.pet.dogName}</h2>
+              <div>
+                <h2>{panelData.pet.dogName}</h2>
+                <p className="prescription-panel-sub no-print">Structured prescription + attachments (does not clutter the Rx sheet)</p>
+              </div>
               <button type="button" className="btn btn-secondary" onClick={() => setSelectedPetId(null)}>
                 Close
               </button>
             </div>
 
-            {panelData.pet.profilePhotoUrl ? (
-              <img className="parent-photo-preview" src={panelData.pet.profilePhotoUrl} alt={`${panelData.pet.dogName} profile`} />
-            ) : (
-              <div className="parent-photo-placeholder">No profile photo</div>
-            )}
-
-            <div className="admin-detail-grid">
+            <div className="admin-detail-grid no-print">
               <div className="admin-detail-card">Breed: {panelData.pet.breed}</div>
               <div className="admin-detail-card">Gender: {panelData.pet.gender}</div>
               <div className="admin-detail-card">DOB: {formatDate(panelData.pet.dob)}</div>
               <div className="admin-detail-card">Parent: {panelData.pet.parentName}</div>
               <div className="admin-detail-card">Phone: {panelData.pet.parentPhone}</div>
+              <div className="admin-detail-card admin-detail-card--photo">
+                {panelData.pet.profilePhotoUrl ? (
+                  <img className="parent-photo-preview admin-thumb-lg" src={panelData.pet.profilePhotoUrl} alt="" />
+                ) : (
+                  <span className="parent-photo-placeholder">No photo</span>
+                )}
+              </div>
             </div>
 
-            <div className="admin-upload-block">
-              <h3>Upload Files</h3>
+            <section className="prescription-module">
+              <PrescriptionWorkspace
+                pet={panelData.pet}
+                token={token}
+                onAttached={async () => {
+                  try {
+                    const details = await getAdminPetDetails(token, selectedPetId);
+                    setPanelData(details);
+                  } catch (error) {
+                    setErrorMessage(error instanceof Error ? error.message : 'Saved PDF, but list refresh failed.');
+                  }
+                }}
+                onAttachError={(msg) => setErrorMessage(msg)}
+                onSaved={() => setErrorMessage('')}
+              />
+            </section>
+
+            <div className="admin-upload-block no-print">
+              <h3>Attachments (labs, imaging, scans)</h3>
+              <p className="attachment-hint">Upload PDFs and images here. They attach to the medical record only — not shown on the printed prescription.</p>
               <div className="admin-upload-row">
                 <select value={selectedFileType} onChange={(event) => setSelectedFileType(event.target.value as MedicalFileType)}>
-                  <option value="prescription">Prescription</option>
-                  <option value="lab_report">Lab Report</option>
-                  <option value="media">Media</option>
+                  <option value="prescription">Prescription file</option>
+                  <option value="lab_report">Lab report</option>
+                  <option value="media">Media / X-ray / scan</option>
                 </select>
                 <input
                   type="text"
@@ -255,7 +310,7 @@ const AdminDashboardPage: React.FC = () => {
                   style={{ flex: '1 1 220px' }}
                 />
                 <label htmlFor="admin-upload-input" className="btn btn-primary">
-                  {uploading ? 'Uploading...' : 'Upload File'}
+                  {uploading ? 'Uploading...' : 'Upload file'}
                 </label>
                 <input
                   id="admin-upload-input"
@@ -270,33 +325,25 @@ const AdminDashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <h3>Medical Records</h3>
-            <div className="admin-record-list">
+            <h3 className="no-print">Medical records</h3>
+            <div className="admin-record-list no-print">
               {panelData.medicalRecords.length === 0 ? (
-                <p className="parent-empty">No records uploaded yet.</p>
+                <p className="parent-empty">No attachments yet.</p>
               ) : (
-                panelData.medicalRecords.map((record) => (
-                  <article key={record.id} className="admin-record-item">
-                    <div>
-                      <p>{record.fileName}</p>
-                      <p className="parent-record-subtext">
-                        {record.fileType.replace('_', ' ')} - {formatDate(record.createdAt)}
-                      </p>
-                      {record.description ? <p className="parent-record-subtext">{record.description}</p> : null}
-                    </div>
-                    <div className="admin-record-actions">
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => {
-                          void handleDeleteRecord(record.id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </article>
-                ))
+                <>
+                  {adminPrescriptionRecords.length > 0 ? (
+                    <>
+                      <p className="admin-record-section-title">Prescription PDFs (medication history)</p>
+                      {adminPrescriptionRecords.map((record) => renderAdminRecordRow(record))}
+                    </>
+                  ) : null}
+                  {adminOtherMedicalRecords.length > 0 ? (
+                    <>
+                      <p className="admin-record-section-title">Labs, imaging &amp; other files</p>
+                      {adminOtherMedicalRecords.map((record) => renderAdminRecordRow(record))}
+                    </>
+                  ) : null}
+                </>
               )}
             </div>
           </aside>

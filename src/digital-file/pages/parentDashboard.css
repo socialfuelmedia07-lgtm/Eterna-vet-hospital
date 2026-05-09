@@ -86,6 +86,28 @@
   margin-bottom: 0.6rem;
 }
 
+.parent-record-section-heading {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 1rem 0 0.35rem;
+}
+
+.parent-record-section-heading:first-of-type {
+  margin-top: 0;
+}
+
+.parent-record-item--rx {
+  border-color: #c7dcf4;
+  background: linear-gradient(135deg, #fafdff 0%, #fff 55%);
+}
+
+.parent-type-badge--rx {
+  background: #fff7d6;
+  color: #735900;
+}
+
 .parent-record-list {
   display: grid;
   gap: 0.75rem;
